@@ -8,6 +8,8 @@ from PySide6.QtCore import Slot
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QDesktopServices
 
+
+
 class NewWindow(QWidget):
     def __init__(self, filename):
         super().__init__()
@@ -39,6 +41,7 @@ class FileDialog(QWidget):
         layout2 = QHBoxLayout()
         layout.addWidget(self.btn)
         layout2.addWidget(self.label)
+        layout2.addWidget(self.negativeBtn)
         layout.addLayout(layout2)
         self.setLayout(layout)
     def getImageFile(self):
@@ -49,6 +52,9 @@ class FileDialog(QWidget):
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
     def openNewWindow(self):
+        self.newWindow = NewWindow(self.filename)
+        self.newWindow.show()
+    def openNegative(self):
         self.newWindow = NewWindow(self.filename)
         self.newWindow.show()
 
