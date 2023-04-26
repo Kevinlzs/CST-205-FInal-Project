@@ -27,7 +27,9 @@ class FileDialog(QWidget):
     def __init__(self):
         super().__init__()
         self.resize(600,400)
-        self.btn = QPushButton("Upload an Image")
+        self.btn = QPushButton("Browse...")
+        self.btn.setFixedSize(70,25)
+        self.btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
         self.btn.clicked.connect(self.getImageFile)
         self.btn.clicked.connect(self.openNewWindow)
         self.label = QLabel()
