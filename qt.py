@@ -28,6 +28,7 @@ class FileDialog(QWidget):
         super().__init__()
         self.resize(600,400)
         self.btn = QPushButton("Browse...")
+        self.negativeBtn = QPushButton("Negative")
         self.btn.setFixedSize(70,25)
         self.btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
         self.btn.clicked.connect(self.getImageFile)
