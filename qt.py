@@ -61,6 +61,32 @@ class MyWidow(QWidget):
         self.b6.clicked.connect(self.openLark)
         # self.resize(500,500)
 
+        def getImageFile(self):
+            self.filename, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.jpg *.png)")
+            # , _ allows us to get the file name not the path
+            print(self.filename)
+            image = QPixmap(self.filename)
+            image = image.scaled(300, 300, Qt.KeepAspectRatio)
+            self.label.setPixmap(image)
+        def openGrayscale(self):
+            self.newWindow = NewWindow(self.filename, "grayscale")
+            self.newWindow.show()
+        def openNegative(self):
+            self.newWindow = NewWindow(self.filename, "negative")
+            self.newWindow.show()
+        def openSepia(self):
+            self.newWindow = NewWindow(self.filename, "sepia")
+            self.newWindow.show()
+        def openWarm(self):
+            self.newWindow = NewWindow(self.filename, "warm")
+            self.newWindow.show()
+        def openCool(self):
+            self.newWindow = NewWindow(self.filename, "cool")
+            self.newWindow.show()
+        def openLark(self):
+            self.newWindow = NewWindow(self.filename, "lark")
+            self.newWindow.show()
+
 app = QApplication([])
 window = MyWidow()
 window.show()
