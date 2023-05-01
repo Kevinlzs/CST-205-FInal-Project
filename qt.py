@@ -1,8 +1,14 @@
 import sys
-from PySide6.QtWidgets import (QApplication, QPushButton,
-                                QHBoxLayout, QVBoxLayout, QWidget, QLabel)
-from PySide6.QtCore import Slot 
-class MyWidow(QWidget):
+from PIL import Image
+from PIL.ImageQt import ImageQt
+import sys
+from PySide6.QtWidgets import (QApplication, QLabel, QWidget, 
+                                QPushButton, QLineEdit, QVBoxLayout, QComboBox, QHBoxLayout, QFileDialog)
+from PySide6.QtCore import Slot
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap, QDesktopServices
+
+class MyWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.resize(400,200)
@@ -88,7 +94,6 @@ class MyWidow(QWidget):
             self.newWindow.show()
 
 app = QApplication([])
-window = MyWidow()
+window = MyWindow()
 window.show()
 sys.exit(app.exec())
-        
