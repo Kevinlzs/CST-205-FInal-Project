@@ -51,6 +51,14 @@ class MyWidow(QWidget):
         layout.addLayout(v_layout)
         layout.addLayout(v2_layout)
         self.setLayout(layout)
+
+        self.browse_btn.clicked.connect(self.getImageFile)
+        self.b1.clicked.connect(self.openNegative)
+        self.b2.clicked.connect(self.openGrayscale)
+        self.b3.clicked.connect(self.openSepia)
+        self.b4.clicked.connect(self.openWarm)
+        self.b5.clicked.connect(self.openCool)
+        self.b6.clicked.connect(self.openLark)
         # self.resize(500,500)
 
 app = QApplication([])
