@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QApplication, QLabel, QWidget,
 from PySide6.QtCore import Slot
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QDesktopServices
-
+# QtGui.QImageReader.setAllocationLimit(0)
 
 
 class NewWindow(QWidget):
@@ -160,7 +160,7 @@ class FileDialog(QWidget):
         self.img.putdata(negative_list)
         qim = ImageQt(self.img)
         pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(150, 150, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
     def openSepia(self):
         self.newWindow = NewWindow(self.filename, "sepia")
