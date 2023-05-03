@@ -138,11 +138,21 @@ class FileDialog(QWidget):
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
     def openGrayscale(self):
-        self.newWindow = NewWindow(self.filename, "grayscale")
-        self.newWindow.show()
+        img = Image.open(self.filename)
+        grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in img.getdata() ]
+        img.putdata(grayscale_list)
+        qim = ImageQt(img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def openNegative(self):
-        self.newWindow = NewWindow(self.filename, "negative")
-        self.newWindow.show()
+        img = Image.open(self.filename)
+        negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in img.getdata() ]
+        img.putdata(negative_list)
+        qim = ImageQt(img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def openSepia(self):
         self.newWindow = NewWindow(self.filename, "sepia")
         self.newWindow.show()
