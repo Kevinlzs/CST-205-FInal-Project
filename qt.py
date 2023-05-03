@@ -81,11 +81,17 @@ class FileDialog(QWidget):
         v2_layout = QVBoxLayout()
         v_layout = QVBoxLayout()
 
+        self.image_name = QLineEdit("Image name with .jpg at end")
         self.label = QLabel()
         self.blank_label = QLabel()
-        self.browse_btn = QPushButton("Browse...")
+        self.browse_btn = QPushButton("Browse...", self)
         self.browse_btn.setFixedSize(70,25)
+        # self.browse_btn.setStyleSheet("QPushButton:pressed {background-color : red;}")
         self.browse_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
+        self.save_btn = QPushButton("Save")
+        self.save_btn.setFixedSize(70,25)
+        self.save_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
+        # self.save_btn.setStyleSheet("QPushButton:pressed {background-color : red;}")
         self.b1 = QPushButton("Negative")
         self.b1.setFixedSize(70,25)
         self.b2 = QPushButton("Grey")
@@ -114,6 +120,8 @@ class FileDialog(QWidget):
         v2_layout.addWidget(self.label)
         v2_layout.addWidget(self.blank_label)
         v2_layout.addWidget(self.browse_btn)
+        v2_layout.addWidget(self.image_name)
+        v2_layout.addWidget(self.save_btn)
         
         v_layout.addLayout(h1_layout)
         v_layout.addLayout(h2_layout)
@@ -129,6 +137,7 @@ class FileDialog(QWidget):
         self.b4.clicked.connect(self.openWarm)
         self.b5.clicked.connect(self.openCool)
         self.b6.clicked.connect(self.openLark)
+        self.save_btn.clicked.connect(self.saveImage)
 
     def getImageFile(self):
         self.filename, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.jpg *.png)")
@@ -138,18 +147,18 @@ class FileDialog(QWidget):
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
     def openGrayscale(self):
-        img = Image.open(self.filename)
-        grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in img.getdata() ]
-        img.putdata(grayscale_list)
-        qim = ImageQt(img)
+        self.img = Image.open(self.filename)
+        grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
+        self.img.putdata(grayscale_list)
+        qim = ImageQt(self.img)
         pixmap = QPixmap.fromImage(qim)
         pixmap = pixmap.scaled(300,300, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
     def openNegative(self):
-        img = Image.open(self.filename)
-        negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in img.getdata() ]
-        img.putdata(negative_list)
-        qim = ImageQt(img)
+        self.img = Image.open(self.filename)
+        negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in self.img.getdata() ]
+        self.img.putdata(negative_list)
+        qim = ImageQt(self.img)
         pixmap = QPixmap.fromImage(qim)
         pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
@@ -165,6 +174,8 @@ class FileDialog(QWidget):
     def openLark(self):
         self.newWindow = NewWindow(self.filename, "lark")
         self.newWindow.show()
+    def saveImage(self):
+        self.img.save(self.image_name.text())
 
 app = QApplication([])
 window = FileDialog()
