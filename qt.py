@@ -8,7 +8,8 @@ from PySide6.QtCore import Slot
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QDesktopServices, QImageReader
 
-
+import requests, json
+from pprint import pprint
 
 class NewWindow(QWidget):
     def __init__(self, filename, type):
@@ -80,6 +81,7 @@ class FileDialog(QWidget):
         layout = QHBoxLayout()
         v2_layout = QVBoxLayout()
         v_layout = QVBoxLayout()
+        self.pixmap = QPixmap()
 
         self.image_name = QLineEdit("Image name with .jpg at end")
         self.label = QLabel()
@@ -104,6 +106,8 @@ class FileDialog(QWidget):
         self.b5.setFixedSize(70,25)
         self.b6 = QPushButton("Lark")
         self.b6.setFixedSize(70,25)
+        self.b7 = QPushButton("Random Img")
+        self.b7.setFixedSize(90,25)
 
         h1_layout = QHBoxLayout()
         h1_layout.addWidget(self.b1)
@@ -117,6 +121,9 @@ class FileDialog(QWidget):
         h3_layout.addWidget(self.b5)
         h3_layout.addWidget(self.b6)
 
+        h4_layout = QHBoxLayout()
+        h4_layout.addWidget(self.b7)
+
         v2_layout.addWidget(self.label)
         v2_layout.addWidget(self.blank_label)
         v2_layout.addWidget(self.browse_btn)
@@ -126,6 +133,7 @@ class FileDialog(QWidget):
         v_layout.addLayout(h1_layout)
         v_layout.addLayout(h2_layout)
         v_layout.addLayout(h3_layout)
+        v_layout.addLayout(h4_layout)
         layout.addLayout(v_layout)
         layout.addLayout(v2_layout)
         self.setLayout(layout)
@@ -137,6 +145,7 @@ class FileDialog(QWidget):
         self.b4.clicked.connect(self.openWarm)
         self.b5.clicked.connect(self.openCool)
         self.b6.clicked.connect(self.openLark)
+        self.b7.clicked.connect(self.openRandomImage)
         self.save_btn.clicked.connect(self.saveImage)
 
     def getImageFile(self):
@@ -160,7 +169,7 @@ class FileDialog(QWidget):
         self.img.putdata(negative_list)
         qim = ImageQt(self.img)
         pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(150, 150, Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
     def openSepia(self):
         self.newWindow = NewWindow(self.filename, "sepia")
@@ -176,6 +185,15 @@ class FileDialog(QWidget):
         self.newWindow.show()
     def saveImage(self):
         self.img.save(self.image_name.text())
+    def openRandomImage(self):
+        img = requests.get("https://picsum.photos/200/300")
+        # image = Image.open("https://en.wikipedia.org/wiki/File:Image_created_with_a_mobile_phone.png")
+        # qim = ImageQt(img.content)
+        # print(qim)
+        self.pixmap.loadFromData(img.content)
+        # print(self.pixmap)
+        self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
 
 app = QApplication([])
 window = FileDialog()
