@@ -48,10 +48,10 @@ class NewWindow(QWidget):
             pixmap = QPixmap.fromImage(qim)
             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
         elif type == "lark":
-            # lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in img.getdata() ]
+            lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in img.getdata() ]
             # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
             # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
-            img.putdata(thermal_list)
+            img.putdata(lark_list)
             qim = ImageQt(img)
             pixmap = QPixmap.fromImage(qim)
             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
