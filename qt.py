@@ -6,8 +6,8 @@ from PySide6.QtWidgets import (QApplication, QLabel, QWidget,
                                 QPushButton, QLineEdit, QVBoxLayout, QComboBox, QHBoxLayout, QFileDialog)
 from PySide6.QtCore import Slot
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap, QDesktopServices
-# QtGui.QImageReader.setAllocationLimit(0)
+from PySide6.QtGui import QPixmap, QDesktopServices, QImageReader
+
 
 
 class NewWindow(QWidget):
