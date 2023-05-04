@@ -8,6 +8,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QDesktopServices, QImageReader
 
+from io import BytesIO
 import requests, json
 from pprint import pprint
 
@@ -49,7 +50,7 @@ class NewWindow(QWidget):
         elif type == "lark":
             # lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in img.getdata() ]
             # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
-            thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
+            # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
             img.putdata(thermal_list)
             qim = ImageQt(img)
             pixmap = QPixmap.fromImage(qim)
@@ -59,7 +60,7 @@ class NewWindow(QWidget):
         self.layout.addWidget(self.label)
         self.setLayout(self.layout)
 
-class FileDialog(QWidget):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         # self.resize(600,400)
@@ -155,8 +156,8 @@ class FileDialog(QWidget):
         image = QPixmap(self.filename)
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
-    def openGrayscale(self):
         self.img = Image.open(self.filename)
+    def openGrayscale(self):
         grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
         self.img.putdata(grayscale_list)
         qim = ImageQt(self.img)
@@ -164,7 +165,6 @@ class FileDialog(QWidget):
         pixmap = pixmap.scaled(300,300, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
     def openNegative(self):
-        self.img = Image.open(self.filename)
         negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in self.img.getdata() ]
         self.img.putdata(negative_list)
         qim = ImageQt(self.img)
@@ -172,30 +172,46 @@ class FileDialog(QWidget):
         pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(pixmap)
     def openSepia(self):
-        self.newWindow = NewWindow(self.filename, "sepia")
-        self.newWindow.show()
+        sepia_list = [ (int(p[0]*1.1), p[1], int(p[2]*.9)) if p[0] < 63 else (int(p[0]*1.15), p[1], int(p[2]*.85)) if p[0] > 62 and p[0] < 192 else (int(p[0]*1.08), p[1], int(p[2]*.5)) for p in self.img.getdata()]
+        self.img.putdata(sepia_list)
+        qim = ImageQt(self.img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def openWarm(self):
-        self.newWindow = NewWindow(self.filename, "warm")
-        self.newWindow.show()
+        warm_list = [ (int(p[0] * 1.2), p[1], int(p[2] * .8)) for p in self.img.getdata() ]
+        self.img.putdata(warm_list)
+        qim = ImageQt(self.img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def openCool(self):
-        self.newWindow = NewWindow(self.filename, "cool")
-        self.newWindow.show()
+        cool_list = [ (int(p[0] * .8), p[1], int(p[2] * 1.2)) for p in self.img.getdata() ]
+        self.img.putdata(cool_list)
+        qim = ImageQt(self.img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def openLark(self):
-        self.newWindow = NewWindow(self.filename, "lark")
-        self.newWindow.show()
+        lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in self.img.getdata() ]
+        # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
+        # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
+        self.img.putdata(lark_list)
+        qim = ImageQt(self.img)
+        pixmap = QPixmap.fromImage(qim)
+        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
     def saveImage(self):
         self.img.save(self.image_name.text())
     def openRandomImage(self):
+        self.image_type = "random"
         img = requests.get("https://picsum.photos/200/300")
-        # image = Image.open("https://en.wikipedia.org/wiki/File:Image_created_with_a_mobile_phone.png")
-        # qim = ImageQt(img.content)
-        # print(qim)
+        self.img = Image.open(BytesIO(img.content))
         self.pixmap.loadFromData(img.content)
-        # print(self.pixmap)
         self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
 
 app = QApplication([])
-window = FileDialog()
+window = MainWindow()
 window.show()
 sys.exit(app.exec())
