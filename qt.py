@@ -12,53 +12,53 @@ from io import BytesIO
 import requests, json
 from pprint import pprint
 
-class NewWindow(QWidget):
-    def __init__(self, filename, type):
-        super().__init__()
-        self.label = QLabel()
-        img = Image.open(filename)
-        if type == "grayscale":
-            grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in img.getdata() ]
-            img.putdata(grayscale_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500,500, Qt.KeepAspectRatio)
-        elif type == "negative":
-            negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in img.getdata() ]
-            img.putdata(negative_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
-        elif type == "sepia":
-            sepia_list = [ (int(p[0]*1.1), p[1], int(p[2]*.9)) if p[0] < 63 else (int(p[0]*1.15), p[1], int(p[2]*.85)) if p[0] > 62 and p[0] < 192 else (int(p[0]*1.08), p[1], int(p[2]*.5)) for p in img.getdata()]
-            img.putdata(sepia_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
-        elif type == "warm":
-            warm_list = [ (int(p[0] * 1.2), p[1], int(p[2] * .8)) for p in img.getdata() ]
-            img.putdata(warm_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
-        elif type == "cool":
-            cool_list = [ (int(p[0] * .8), p[1], int(p[2] * 1.2)) for p in img.getdata() ]
-            img.putdata(cool_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
-        elif type == "lark":
-            lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in img.getdata() ]
-            # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
-            # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
-            img.putdata(lark_list)
-            qim = ImageQt(img)
-            pixmap = QPixmap.fromImage(qim)
-            pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.label)
-        self.setLayout(self.layout)
+# class NewWindow(QWidget):
+#     def __init__(self, filename, type):
+#         super().__init__()
+#         self.label = QLabel()
+#         img = Image.open(filename)
+#         if type == "grayscale":
+#             grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in img.getdata() ]
+#             img.putdata(grayscale_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500,500, Qt.KeepAspectRatio)
+#         elif type == "negative":
+#             negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in img.getdata() ]
+#             img.putdata(negative_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
+#         elif type == "sepia":
+#             sepia_list = [ (int(p[0]*1.1), p[1], int(p[2]*.9)) if p[0] < 63 else (int(p[0]*1.15), p[1], int(p[2]*.85)) if p[0] > 62 and p[0] < 192 else (int(p[0]*1.08), p[1], int(p[2]*.5)) for p in img.getdata()]
+#             img.putdata(sepia_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
+#         elif type == "warm":
+#             warm_list = [ (int(p[0] * 1.2), p[1], int(p[2] * .8)) for p in img.getdata() ]
+#             img.putdata(warm_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
+#         elif type == "cool":
+#             cool_list = [ (int(p[0] * .8), p[1], int(p[2] * 1.2)) for p in img.getdata() ]
+#             img.putdata(cool_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
+#         elif type == "lark":
+#             lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in img.getdata() ]
+#             # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
+#             # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
+#             img.putdata(lark_list)
+#             qim = ImageQt(img)
+#             pixmap = QPixmap.fromImage(qim)
+#             pixmap = pixmap.scaled(500, 500, Qt.KeepAspectRatio)
+#         self.label.setPixmap(pixmap)
+#         self.layout = QVBoxLayout()
+#         self.layout.addWidget(self.label)
+#         self.setLayout(self.layout)
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -83,6 +83,7 @@ class MainWindow(QWidget):
         v2_layout = QVBoxLayout()
         v_layout = QVBoxLayout()
         self.pixmap = QPixmap()
+        self.scaled = ""
 
         self.image_name = QLineEdit("Image name with .jpg at end")
         self.label = QLabel()
@@ -109,6 +110,12 @@ class MainWindow(QWidget):
         self.b6.setFixedSize(70,25)
         self.b7 = QPushButton("Random Img")
         self.b7.setFixedSize(90,25)
+        self.b8 = QPushButton("Small")
+        self.b8.setFixedSize(70,25)
+        self.b9 = QPushButton("Medium")
+        self.b9.setFixedSize(70,25)
+        self.b10 = QPushButton("Large")
+        self.b10.setFixedSize(70,25)
 
         h1_layout = QHBoxLayout()
         h1_layout.addWidget(self.b1)
@@ -124,6 +131,11 @@ class MainWindow(QWidget):
 
         h4_layout = QHBoxLayout()
         h4_layout.addWidget(self.b7)
+        h4_layout.addWidget(self.b8)
+
+        h5_layout = QHBoxLayout()
+        h5_layout.addWidget(self.b9)
+        h5_layout.addWidget(self.b10)
 
         v2_layout.addWidget(self.label)
         v2_layout.addWidget(self.blank_label)
@@ -135,6 +147,7 @@ class MainWindow(QWidget):
         v_layout.addLayout(h2_layout)
         v_layout.addLayout(h3_layout)
         v_layout.addLayout(h4_layout)
+        v_layout.addLayout(h5_layout)
         layout.addLayout(v_layout)
         layout.addLayout(v2_layout)
         self.setLayout(layout)
@@ -147,6 +160,9 @@ class MainWindow(QWidget):
         self.b5.clicked.connect(self.openCool)
         self.b6.clicked.connect(self.openLark)
         self.b7.clicked.connect(self.openRandomImage)
+        self.b8.clicked.connect(self.scaleSmall)
+        self.b9.clicked.connect(self.scaleMedium)
+        self.b10.clicked.connect(self.scaleLarge)
         self.save_btn.clicked.connect(self.saveImage)
 
     def getImageFile(self):
@@ -161,46 +177,79 @@ class MainWindow(QWidget):
         grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
         self.img.putdata(grayscale_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300,300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def openNegative(self):
         negative_list = [ (255-p[0], 255-p[1], 255-p[2]) for p in self.img.getdata() ]
         self.img.putdata(negative_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        # self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def openSepia(self):
         sepia_list = [ (int(p[0]*1.1), p[1], int(p[2]*.9)) if p[0] < 63 else (int(p[0]*1.15), p[1], int(p[2]*.85)) if p[0] > 62 and p[0] < 192 else (int(p[0]*1.08), p[1], int(p[2]*.5)) for p in self.img.getdata()]
         self.img.putdata(sepia_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        # self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def openWarm(self):
         warm_list = [ (int(p[0] * 1.2), p[1], int(p[2] * .8)) for p in self.img.getdata() ]
         self.img.putdata(warm_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def openCool(self):
         cool_list = [ (int(p[0] * .8), p[1], int(p[2] * 1.2)) for p in self.img.getdata() ]
         self.img.putdata(cool_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def openLark(self):
         lark_list = [ (int(p[0] * 1.2), int(p[1]*.9), int(p[2] * .8)) for p in self.img.getdata() ]
         # infarred_list = [ (int(p[0] * .5), int(p[1]*.2), int(p[2] * .5)) for p in img.getdata() ]
         # thermal_list = [ (int(p[0] * .5), int(p[1]*.5), int(p[2] * 1.5)) for p in img.getdata() ]
         self.img.putdata(lark_list)
         qim = ImageQt(self.img)
-        pixmap = QPixmap.fromImage(qim)
-        pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
-        self.label.setPixmap(pixmap)
+        self.pixmap = QPixmap.fromImage(qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
     def saveImage(self):
         self.img.save(self.image_name.text())
     def openRandomImage(self):
@@ -208,7 +257,24 @@ class MainWindow(QWidget):
         img = requests.get("https://picsum.photos/200/300")
         self.img = Image.open(BytesIO(img.content))
         self.pixmap.loadFromData(img.content)
-        self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
+    def scaleSmall(self):
+        self.scaled = "small"
+        self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
+    def scaleMedium(self):
+        self.scaled = "medium"
+        self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
+    def scaleLarge(self):
+        self.scaled = "large"
+        self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
 
 app = QApplication([])
