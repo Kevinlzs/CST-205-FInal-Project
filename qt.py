@@ -180,7 +180,9 @@ class MainWindow(QWidget):
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
         self.img = Image.open(self.filename)
+        self.saved_img = self.filename
         self.saved_qim = ImageQt(self.img)
+        self.image_type = "directory"
     def openGrayscale(self):
         grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
         self.img.putdata(grayscale_list)
@@ -264,6 +266,7 @@ class MainWindow(QWidget):
         self.image_type = "random"
         img = requests.get("https://picsum.photos/200/300")
         self.img = Image.open(BytesIO(img.content))
+        self.saved_img = BytesIO(img.content)
         self.saved_qim = ImageQt(self.img)
         self.pixmap.loadFromData(img.content)
         if self.scaled == "small":
@@ -287,6 +290,7 @@ class MainWindow(QWidget):
         self.label.setPixmap(self.pixmap)
     def undo(self):
         self.pixmap = QPixmap.fromImage(self.saved_qim)
+        self.img = Image.open(self.saved_img)
         if self.scaled == "small":
             self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
         elif self.scaled == "large":
