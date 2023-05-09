@@ -20,7 +20,7 @@ class Kevin:
     def __eq__(self, other):
         return self.otter_id == other.otter_id
 
-import numpy as np
+# import numpy as np
 x = [1,4]
 
 x_p2 = np.array(x)

@@ -116,6 +116,8 @@ class MainWindow(QWidget):
         self.b9.setFixedSize(70,25)
         self.b10 = QPushButton("Large")
         self.b10.setFixedSize(70,25)
+        self.b11 = QPushButton("Undo")
+        self.b11.setFixedSize(70,25)
 
         h1_layout = QHBoxLayout()
         h1_layout.addWidget(self.b1)
@@ -137,6 +139,9 @@ class MainWindow(QWidget):
         h5_layout.addWidget(self.b9)
         h5_layout.addWidget(self.b10)
 
+        h6_layout = QHBoxLayout()
+        h6_layout.addWidget(self.b11)
+
         v2_layout.addWidget(self.label)
         v2_layout.addWidget(self.blank_label)
         v2_layout.addWidget(self.browse_btn)
@@ -148,6 +153,7 @@ class MainWindow(QWidget):
         v_layout.addLayout(h3_layout)
         v_layout.addLayout(h4_layout)
         v_layout.addLayout(h5_layout)
+        v_layout.addLayout(h6_layout)
         layout.addLayout(v_layout)
         layout.addLayout(v2_layout)
         self.setLayout(layout)
@@ -164,6 +170,7 @@ class MainWindow(QWidget):
         self.b9.clicked.connect(self.scaleMedium)
         self.b10.clicked.connect(self.scaleLarge)
         self.save_btn.clicked.connect(self.saveImage)
+        self.b11.clicked.connect(self.undo)
 
     def getImageFile(self):
         self.filename, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.jpg *.png)")
@@ -173,6 +180,7 @@ class MainWindow(QWidget):
         image = image.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(image)
         self.img = Image.open(self.filename)
+        self.saved_qim = ImageQt(self.img)
     def openGrayscale(self):
         grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
         self.img.putdata(grayscale_list)
@@ -256,6 +264,7 @@ class MainWindow(QWidget):
         self.image_type = "random"
         img = requests.get("https://picsum.photos/200/300")
         self.img = Image.open(BytesIO(img.content))
+        self.saved_qim = ImageQt(self.img)
         self.pixmap.loadFromData(img.content)
         if self.scaled == "small":
             self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
@@ -276,6 +285,16 @@ class MainWindow(QWidget):
         self.scaled = "large"
         self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
+    def undo(self):
+        self.pixmap = QPixmap.fromImage(self.saved_qim)
+        if self.scaled == "small":
+            self.pixmap = self.pixmap.scaled(200,200, Qt.KeepAspectRatio)
+        elif self.scaled == "large":
+            self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
+        else:
+            self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
+        self.label.setPixmap(self.pixmap)
+
 
 app = QApplication([])
 window = MainWindow()
