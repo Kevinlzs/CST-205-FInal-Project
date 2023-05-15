@@ -1,17 +1,21 @@
-# CST-205-FInal-Project
-Photoshop For Dummies
+# Photoshop For Dummies
 
-Andy Hernandez, Abel Delgado, Kevin Lopez
+## Team
+* Andy Hernandez
+* Abel Delgado
+* Kevin Lopez
 
-CST-205 Multimedia Design & Progmng
-5/15/23
-To run the program you need first need to have Python 3.7+ and we recommend to use a 
-virtual enviornment. In your activated virtual enviornment, first install pip,
-pip install --upgrade pip. Next install pillow, pip install Pillow. Then install 
-QT for python by typing this command in the terminal, pip install PySide6. Lastly, 
-you should install requests using this command, pip install requests. Once those 
-are all install then you can type python3 (or your current version of python) qt.py
-to run the program. 
+## Class: CST-205 Multimedia Design & Progmng
+## Date: May 15, 2023
 
-Github Link: https://github.com/Kevinlzs/CST-205-FInal-Project
-Trello Link: https://trello.com/b/V8SIDdgd/team-7547
+## To run the program:
+1. Clone the Github Repository
+2. In the directory where the clone is, creat a virtual enviornment
+3. Activate Virtual enviornment
+4. Install these following libraries: pip install --upgrade pip, pip install Pillow, pip install PySide6, pip install requests
+5. Type python qt.py to run the program
+
+## Github Link: https://github.com/Kevinlzs/CST-205-FInal-Project
+## Trello Link: https://trello.com/b/V8SIDdgd/team-7547
+
+## Extra Features:
