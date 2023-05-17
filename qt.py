@@ -15,7 +15,7 @@ from pprint import pprint
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(800,800)  
+        self.resize(650,650)  
         self.setWindowTitle("Photoshop for Dummies")  
         self.is_dark_mode = False
         # Main layout
@@ -32,25 +32,29 @@ class MainWindow(QWidget):
         self.label = QLabel()
         self.blank_label = QLabel()
         self.browse_btn = QPushButton("Select Photo")
+        self.random_image_btn = QPushButton("Random Photo")
         self.save_btn = QPushButton("Save Photo")
         self.dark_mode_btn = QPushButton("Dark Mode")  
         self.label.setAlignment(Qt.AlignCenter)
-        self.browse_btn.setFixedSize(90,25)
+        self.browse_btn.setFixedSize(100,25)
         self.browse_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.save_btn.setFixedSize(90,25)
+        self.random_image_btn.setFixedSize(100,25)
+        self.random_image_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
+        self.save_btn.setFixedSize(100,25)
         self.save_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.dark_mode_btn.setFixedSize(90,25)
+        self.dark_mode_btn.setFixedSize(100,25)
         self.dark_mode_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
         self.save_btn.setEnabled(False)
         button_layout.addWidget(self.browse_btn)
+        button_layout.addWidget(self.random_image_btn)
         button_layout.addWidget(self.save_btn)
         button_layout.addStretch()  
         button_layout.addWidget(self.dark_mode_btn)  
 
         self.buttons = []
-        for i, name in enumerate(["Negative", "Grey", "Sepia", "Warm", "Cool", "Lark", "Random Img", "Small", "Medium", "Large", "Undo"]):
+        for i, name in enumerate(["Negative", "Grey", "Sepia", "Warm", "Cool", "Lark", "Small", "Medium", "Large", "Undo"]):
             button = QPushButton(name)
-            button.setFixedSize(90,25)
+            button.setFixedSize(100,25)
             button.setStyleSheet("border-radius : 5; border : 2px solid grey")
             self.buttons.append(button)
             button_layout.addWidget(button)
@@ -76,6 +80,7 @@ class MainWindow(QWidget):
 
         # Connecting the functions to their corresponding buttons when clicked
         self.browse_btn.clicked.connect(self.getImageFile)
+        self.random_image_btn.clicked.connect(self.openRandomImage)
         self.save_btn.clicked.connect(self.saveImage)
         self.dark_mode_btn.clicked.connect(self.toggleDarkMode)  
         self.buttons[0].clicked.connect(self.openNegative)
@@ -84,11 +89,10 @@ class MainWindow(QWidget):
         self.buttons[3].clicked.connect(self.openWarm)
         self.buttons[4].clicked.connect(self.openCool)
         self.buttons[5].clicked.connect(self.openLark)
-        self.buttons[6].clicked.connect(self.openRandomImage)
-        self.buttons[7].clicked.connect(self.scaleSmall)
-        self.buttons[8].clicked.connect(self.scaleMedium)
-        self.buttons[9].clicked.connect(self.scaleLarge)
-        self.buttons[10].clicked.connect(self.undo)
+        self.buttons[6].clicked.connect(self.scaleSmall)
+        self.buttons[7].clicked.connect(self.scaleMedium)
+        self.buttons[8].clicked.connect(self.scaleLarge)
+        self.buttons[9].clicked.connect(self.undo)
 
 
     def getImageFile(self):
@@ -117,11 +121,6 @@ class MainWindow(QWidget):
             self.saved_qim = ImageQt(self.img)
             self.image_type = "directory"
 
-        # self.filename, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Image Files (*.jpg *.png)")
-        # , _ allows us to get the file name not the path
-        # print(self.filename)
-        # image = QPixmap(self.filename)
-        # image = image.scaled(300, 300, Qt.KeepAspectRatio)
     def openGrayscale(self):
         grayscale_list = [ ((a[0]+a[1]+a[2])//3, ) * 3 for a in self.img.getdata() ]
         self.img.putdata(grayscale_list)
@@ -145,7 +144,6 @@ class MainWindow(QWidget):
             self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
         else:
             self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
-        # self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
     def openSepia(self):
         sepia_list = [ (int(p[0]*1.1), p[1], int(p[2]*.9)) if p[0] < 63 else (int(p[0]*1.15), p[1], int(p[2]*.85)) if p[0] > 62 and p[0] < 192 else (int(p[0]*1.08), p[1], int(p[2]*.5)) for p in self.img.getdata()]
@@ -158,7 +156,6 @@ class MainWindow(QWidget):
             self.pixmap = self.pixmap.scaled(400,400, Qt.KeepAspectRatio)
         else:
             self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
-        # self.pixmap = self.pixmap.scaled(300, 300, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
     def openWarm(self):
         warm_list = [ (int(p[0] * 1.2), p[1], int(p[2] * .8)) for p in self.img.getdata() ]
@@ -286,84 +283,3 @@ app = QApplication([])
 window = MainWindow()
 window.show()
 sys.exit(app.exec())
-
-
-# class MainWindow(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-
-#         # Create a button and set its text
-#         self.select_photo_button = QPushButton("Select Photo")
-#         self.select_photo_button.clicked.connect(self.select_photo)
-
-#         # Create a save button
-#         self.save_button = QPushButton("Save Photo")
-#         self.save_button.clicked.connect(self.save_photo)
-#         self.save_button.setEnabled(False)  # Disable the button until an image is loaded
-
-#         # Create a label to display the photo
-#         self.photo_label = QLabel()
-#         self.photo_label.setAlignment(Qt.AlignCenter)
-
-#         # Create a label to display the image sizes
-#         self.size_label = QLabel()
-#         self.size_label.setAlignment(Qt.AlignCenter)
-
-#         # Create a vertical layout to contain the buttons
-#         button_layout = QVBoxLayout()
-#         button_layout.addWidget(self.select_photo_button)
-#         button_layout.addWidget(self.save_button)
-#         button_layout.addStretch(1)
-
-#         # Create a vertical layout to contain the image and size label
-#         image_layout = QVBoxLayout()
-#         image_layout.addWidget(self.photo_label)
-#         image_layout.addWidget(self.size_label)
-
-#         # Create a horizontal layout to contain the button layout and image layout
-#         layout = QHBoxLayout()
-#         layout.addLayout(button_layout)
-#         layout.addStretch(1)
-#         layout.addLayout(image_layout)
-#         layout.addStretch(1)
-
-#         # Create a central widget to hold the layout
-#         central_widget = QWidget()
-#         central_widget.setLayout(layout)
-#         self.setCentralWidget(central_widget)
-
-#         self.pixmap = None  # To hold the QPixmap object
-
-#     def select_photo(self):
-#         options = QFileDialog.Options()
-#         options |= QFileDialog.ReadOnly
-#         file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
-#                                                    "Images (*.png *.xpm *.jpg *.bmp *.gif);;All Files (*)", options=options)
-#         if file_name:
-#             # Load the image and resize if necessary
-#             original_pixmap = QPixmap(file_name)
-#             self.pixmap = original_pixmap.copy()
-#             max_size = 500  # Maximum size for width or height
-#             if self.pixmap.width() > max_size or self.pixmap.height() > max_size:
-#                 self.pixmap = self.pixmap.scaled(max_size, max_size, Qt.KeepAspectRatio)
-
-#             # Set the photo label's pixmap to the resized photo
-#             self.photo_label.setPixmap(self.pixmap)
-#             self.save_button.setEnabled(True)  # Enable the save button
-
-#             # Display the original and resized image sizes
-#             self.size_label.setText(f'Original size: {original_pixmap.width()} x {original_pixmap.height()}\n'
-#                                     f'Resized size: {self.pixmap.width()} x {self.pixmap.height()}')
-
-#     def save_photo(self):
-#         if self.pixmap:
-#             file_name, _ = QFileDialog.getSaveFileName(self, "Save Image", "",
-#                                                        "Images (*.png *.jpg *.bmp *.gif);;All Files (*)")
-#             if file_name:
-#                 self.pixmap.save(file_name)
-
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     window = MainWindow()
-#     window.show()
-#     sys.exit(app.exec_())
