@@ -3,8 +3,8 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 import sys
 from PySide6.QtWidgets import (QApplication, QLabel, QWidget, 
-                                QPushButton, QLineEdit, QVBoxLayout, QComboBox, QHBoxLayout, QFileDialog)
-from PySide6.QtCore import Slot
+                                QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QFileDialog)
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QDesktopServices, QImageReader
 
@@ -12,115 +12,84 @@ from io import BytesIO
 import requests, json
 from pprint import pprint
 
-
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(400,400)
+        self.resize(800,800)  
+        self.setWindowTitle("Photoshop for Dummies")  
+        self.is_dark_mode = False
+        # Main layout
+        main_layout = QHBoxLayout()
 
-        layout = QHBoxLayout()
-        v2_layout = QVBoxLayout()
-        v_layout = QVBoxLayout()
+        # Layout for buttons
+        button_layout = QVBoxLayout()
+        button_layout.setAlignment(Qt.AlignTop)
+        
+        # Widgets and buttons 
         self.pixmap = QPixmap()
         self.scaled = ""
-
-        #creating save button, browse button, and labels to hold the image
         self.size_label = QLabel()
         self.label = QLabel()
         self.blank_label = QLabel()
         self.browse_btn = QPushButton("Select Photo")
+        self.save_btn = QPushButton("Save Photo")
+        self.dark_mode_btn = QPushButton("Dark Mode")  
+        self.label.setAlignment(Qt.AlignCenter)
         self.browse_btn.setFixedSize(90,25)
         self.browse_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.save_btn = QPushButton("Save Photo")
         self.save_btn.setFixedSize(90,25)
         self.save_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.label.setAlignment(Qt.AlignCenter)
+        self.dark_mode_btn.setFixedSize(90,25)
+        self.dark_mode_btn.setStyleSheet("border-radius : 5; border : 2px solid grey")
         self.save_btn.setEnabled(False)
+        button_layout.addWidget(self.browse_btn)
+        button_layout.addWidget(self.save_btn)
+        button_layout.addStretch()  
+        button_layout.addWidget(self.dark_mode_btn)  
 
-        #styling and creating the buttons for image manipulation, scaling, and random img.
-        self.b1 = QPushButton("Negative")
-        self.b1.setFixedSize(70,25)
-        self.b1.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b2 = QPushButton("Grey")
-        self.b2.setFixedSize(70,25)
-        self.b2.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b3 = QPushButton("Sepia")
-        self.b3.setFixedSize(70,25)
-        self.b3.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b4 = QPushButton("Warm")
-        self.b4.setFixedSize(70,25)
-        self.b4.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b5 = QPushButton("Cool")
-        self.b5.setFixedSize(70,25)
-        self.b5.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b6 = QPushButton("Lark")
-        self.b6.setFixedSize(70,25)
-        self.b6.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b7 = QPushButton("Random Img")
-        self.b7.setFixedSize(90,25)
-        self.b7.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b8 = QPushButton("Small")
-        self.b8.setFixedSize(70,25)
-        self.b8.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b9 = QPushButton("Medium")
-        self.b9.setFixedSize(70,25)
-        self.b9.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b10 = QPushButton("Large")
-        self.b10.setFixedSize(70,25)
-        self.b10.setStyleSheet("border-radius : 5; border : 2px solid grey")
-        self.b11 = QPushButton("Undo")
-        self.b11.setFixedSize(70,25)
-        self.b11.setStyleSheet("border-radius : 5; border : 2px solid grey")
+        self.buttons = []
+        for i, name in enumerate(["Negative", "Grey", "Sepia", "Warm", "Cool", "Lark", "Random Img", "Small", "Medium", "Large", "Undo"]):
+            button = QPushButton(name)
+            button.setFixedSize(90,25)
+            button.setStyleSheet("border-radius : 5; border : 2px solid grey")
+            self.buttons.append(button)
+            button_layout.addWidget(button)
 
-        #creating layouts and adding widgest to their respective layout
-        h1_layout = QHBoxLayout()
-        h1_layout.addWidget(self.b1)
-        h1_layout.addWidget(self.b2)
-        h2_layout = QHBoxLayout()
-        h2_layout.addWidget(self.b3)
-        h2_layout.addWidget(self.b4)
-        h3_layout = QHBoxLayout()
-        h3_layout.addWidget(self.b5)
-        h3_layout.addWidget(self.b6)
-        h4_layout = QHBoxLayout()
-        h4_layout.addWidget(self.b7)
-        h4_layout.addWidget(self.b8)
-        h5_layout = QHBoxLayout()
-        h5_layout.addWidget(self.b9)
-        h5_layout.addWidget(self.b10)
-        h6_layout = QHBoxLayout()
-        h6_layout.addWidget(self.b11)
-        v2_layout.addWidget(self.label)
-        v2_layout.addWidget(self.blank_label)
-        v2_layout.addWidget(self.browse_btn)
-        v2_layout.addWidget(self.save_btn)
-        v2_layout.addWidget(self.size_label)
-        
-        #adding layouts
-        v_layout.addLayout(h1_layout)
-        v_layout.addLayout(h2_layout)
-        v_layout.addLayout(h3_layout)
-        v_layout.addLayout(h4_layout)
-        v_layout.addLayout(h5_layout)
-        v_layout.addLayout(h6_layout)
-        layout.addLayout(v_layout)
-        layout.addLayout(v2_layout)
-        self.setLayout(layout)
+        # Image layout
+        image_layout = QVBoxLayout()
+        image_layout.setAlignment(Qt.AlignCenter)
 
-        #connecting the functions to their corresponding buttons when clicked
+        # Spacers for image layout
+        image_top_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        image_bot_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        # Add spacers and label to image layout
+        image_layout.addItem(image_top_spacer)
+        image_layout.addWidget(self.label)
+        image_layout.addWidget(self.size_label)
+        image_layout.addItem(image_bot_spacer)
+
+        # Adding button layout and image layout to the main layout
+        main_layout.addLayout(button_layout)
+        main_layout.addLayout(image_layout)
+        self.setLayout(main_layout)
+
+        # Connecting the functions to their corresponding buttons when clicked
         self.browse_btn.clicked.connect(self.getImageFile)
-        self.b1.clicked.connect(self.openNegative)
-        self.b2.clicked.connect(self.openGrayscale)
-        self.b3.clicked.connect(self.openSepia)
-        self.b4.clicked.connect(self.openWarm)
-        self.b5.clicked.connect(self.openCool)
-        self.b6.clicked.connect(self.openLark)
-        self.b7.clicked.connect(self.openRandomImage)
-        self.b8.clicked.connect(self.scaleSmall)
-        self.b9.clicked.connect(self.scaleMedium)
-        self.b10.clicked.connect(self.scaleLarge)
         self.save_btn.clicked.connect(self.saveImage)
-        self.b11.clicked.connect(self.undo)
+        self.dark_mode_btn.clicked.connect(self.toggleDarkMode)  
+        self.buttons[0].clicked.connect(self.openNegative)
+        self.buttons[1].clicked.connect(self.openGrayscale)
+        self.buttons[2].clicked.connect(self.openSepia)
+        self.buttons[3].clicked.connect(self.openWarm)
+        self.buttons[4].clicked.connect(self.openCool)
+        self.buttons[5].clicked.connect(self.openLark)
+        self.buttons[6].clicked.connect(self.openRandomImage)
+        self.buttons[7].clicked.connect(self.scaleSmall)
+        self.buttons[8].clicked.connect(self.scaleMedium)
+        self.buttons[9].clicked.connect(self.scaleLarge)
+        self.buttons[10].clicked.connect(self.undo)
+
 
     def getImageFile(self):
         options = QFileDialog.Options()
@@ -137,7 +106,7 @@ class MainWindow(QWidget):
 
             # Set the photo label's pixmap to the resized photo
             self.label.setPixmap(self.pixmap)
-            self.save_btn.setEnabled(True)  # Enable the save button
+            self.save_btn.setEnabled(True)  
 
             # Display the original and resized image sizes
             self.size_label.setText(f'Original size: {self.original_pixmap.width()} x {self.original_pixmap.height()}\n'
@@ -285,6 +254,32 @@ class MainWindow(QWidget):
         else:
             self.pixmap = self.pixmap.scaled(300,300, Qt.KeepAspectRatio)
         self.label.setPixmap(self.pixmap)
+
+    def toggleDarkMode(self):
+        if self.is_dark_mode:
+            # Switch to light mode
+            self.setStyleSheet("")  # Remove any custom styles to revert to default
+        else:
+            # Switch to dark mode
+            dark_stylesheet = """
+                QWidget {
+                    background-color: #222222;
+                    color: #FFFFFF;
+                }
+
+                QPushButton {
+                    background-color: #444444;
+                    color: #FFFFFF;
+                }
+
+                /* Add more style rules for other widgets as needed */
+            """
+            self.setStyleSheet(dark_stylesheet)
+
+        self.is_dark_mode = not self.is_dark_mode
+
+
+
 
 
 app = QApplication([])
