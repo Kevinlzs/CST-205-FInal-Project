@@ -18,4 +18,5 @@
 ### Github Link: https://github.com/Kevinlzs/CST-205-FInal-Project
 ### Trello Link: https://trello.com/b/V8SIDdgd/team-7547
 
-### Extra Features:
+### Extra Features: 
+If we had more time we would have created this application with a feature that would allow the user to crop out certian details of the picture. We would also have worked on a feature that allows the user to draw on the image.
